@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b10">
+  <meta name="description" content="Jelajahi pengalaman ruang lobby mewah dalam tampilan 3D interaktif.">
+  <title>EL7 — Luxury Lobby Experience</title>
+  <style>
+    :root {
+      --gold: #d9bd86;
+      --cream: #f5f0e7;
+      --muted: rgba(245,240,231,.68);
+      --line: rgba(255,255,255,.17);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--cream);
+      background: #090b10;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      overflow: hidden;
+      isolation: isolate;
+      background: #11141a;
+    }
+    .scene {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .shade {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(5,7,10,.84) 0%, rgba(5,7,10,.56) 38%, rgba(5,7,10,.08) 76%),
+        linear-gradient(0deg, rgba(5,7,10,.76) 0%, transparent 42%, rgba(5,7,10,.42) 100%);
+    }
+    .topbar {
+      width: min(1280px, calc(100% - 64px));
+      margin: auto;
+      height: 94px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--cream);
+      text-decoration: none;
+      letter-spacing: .22em;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: Georgia, serif;
+      font-size: 20px;
+    }
+    nav { display: flex; gap: 34px; align-items: center; }
+    nav a {
+      color: rgba(255,255,255,.8);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+    nav a:hover { color: var(--gold); }
+    .sound {
+      color: var(--cream);
+      background: rgba(10,12,16,.35);
+      border: 1px solid var(--line);
+      padding: 11px 16px;
+      font: inherit;
+      font-size: 10px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .content {
+      width: min(1280px, calc(100% - 64px));
+      min-height: calc(100svh - 95px);
+      margin: auto;
+      display: flex;
+      align-items: center;
+      padding: 70px 0 110px;
+      pointer-events: none;
+    }
+    .copy { max-width: 620px; pointer-events: auto; }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      color: var(--gold);
+      font-size: 10px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
+    .eyebrow::before { content: ""; width: 38px; height: 1px; background: var(--gold); }
+    h1 {
+      margin: 0;
+      max-width: 650px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      font-size: clamp(54px, 8vw, 104px);
+      line-height: .98;
+      letter-spacing: -.045em;
+    }
+    h1 span { color: var(--gold); font-style: italic; }
+    .intro {
+      max-width: 430px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.9;
+      margin: 27px 0 34px;
+    }
+    .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 13px; }
+    .button {
+      min-height: 49px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 23px;
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      transition: .2s ease;
+    }
+    .button.primary { background: var(--gold); color: #17130d; border: 1px solid var(--gold); }
+    .button.primary:hover { background: #f0d7a6; transform: translateY(-2px); }
+    .button.secondary { color: var(--cream); border: 1px solid var(--line); background: rgba(10,12,16,.25); }
+    .button.secondary:hover { border-color: var(--gold); color: var(--gold); }
+    .bottomline {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1280px, calc(100% - 64px));
+      min-height: 75px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(255,255,255,.58);
+      font-size: 9px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+    .scroll-hint { display: flex; align-items: center; gap: 12px; }
+    .scroll-hint::before { content: ""; width: 34px; height: 1px; background: var(--gold); }
+    .section {
+      padding: 110px 32px;
+      background: #0c0e13;
+    }
+    .section-inner { width: min(1000px, 100%); margin: auto; text-align: center; }
+    .section .eyebrow { justify-content: center; }
+    h2 {
+      margin: 0;
+      font: 400 clamp(36px, 5vw, 62px)/1.08 Georgia, serif;
+      letter-spacing: -.03em;
+    }
+    .section p {
+      max-width: 650px;
+      margin: 22px auto 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.9;
+    }
+    footer {
+      padding: 25px 32px;
+      text-align: center;
+      color: rgba(255,255,255,.42);
+      background: #08090d;
+      font-size: 10px;
+      letter-spacing: .12em;
+    }
+    @media (max-width: 700px) {
+      .topbar, .content, .bottomline { width: calc(100% - 38px); }
+      .topbar { height: 76px; }
+      nav { display: none; }
+      .content { min-height: calc(100svh - 77px); padding: 65px 0 100px; align-items: center; }
+      .shade {
+        background:
+          linear-gradient(90deg, rgba(5,7,10,.76), rgba(5,7,10,.25)),
+          linear-gradient(0deg, rgba(5,7,10,.82), transparent 70%, rgba(5,7,10,.35));
+      }
+      h1 { font-size: clamp(51px, 15vw, 76px); }
+      .intro { font-size: 13px; max-width: 340px; }
+      .bottomline { min-height: 65px; font-size: 8px; }
+      .bottomline .location { display: none; }
+      .section { padding: 82px 22px; }
+      .sound { padding: 10px 11px; font-size: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero" id="home">
+      <iframe
+        class="scene"
+        title="VR Luxury Lobby — EL7 interactive 3D scene"
+        src="https://sketchfab.com/models/c622ebb761904fd8a72928637f7bc62d/embed?autostart=1&ui_theme=dark"
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+        xr-spatial-tracking
+        allowfullscreen>
+      </iframe>
+      <div class="shade"></div>
+
+      <header class="topbar">
+        <a class="brand" href="#home" aria-label="EL7 Home">
+          <span class="brand-mark">E</span><span>EL<span style="color:var(--gold)">7</span></span>
+        </a>
+        <nav aria-label="Navigasi utama">
+          <a href="#home">Home</a>
+          <a href="#experience">Experience</a>
+          <a href="https://sketchfab.com/3d-models/vr-luxury-lobby-el7-c622ebb761904fd8a72928637f7bc62d" target="_blank" rel="noopener">3D Model</a>
+        </nav>
+        <button class="sound" id="fullscreenBtn" type="button">⛶ Fullscreen</button>
+      </header>
+
+      <div class="content">
+        <div class="copy">
+          <div class="eyebrow">A world of refined elegance</div>
+          <h1>Enter a world<br>of <span>luxury.</span></h1>
+          <p class="intro">Rasakan suasana lobby premium melalui pengalaman 3D interaktif. Jelajahi setiap sudut ruang, nikmati detail arsitektur, dan temukan perspektif baru.</p>
+          <div class="actions">
+            <a class="button primary" href="#experience">Discover experience <span aria-hidden="true">&nbsp;↗</span></a>
+            <a class="button secondary" href="https://sketchfab.com/3d-models/vr-luxury-lobby-el7-c622ebb761904fd8a72928637f7bc62d" target="_blank" rel="noopener">View on Sketchfab</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottomline">
+        <span class="scroll-hint">Scroll to explore</span>
+        <span class="location">Interactive 3D environment · EL7</span>
+        <span>Designed for experience</span>
+      </div>
+    </section>
+
+    <section class="section" id="experience">
+      <div class="section-inner">
+        <div class="eyebrow">The experience</div>
+        <h2>Explore every detail.</h2>
+        <p>Gunakan mouse atau sentuhan untuk memutar sudut pandang, zoom untuk melihat detail, dan jelajahi model 3D langsung dari halaman ini. Untuk pengalaman layar penuh, tekan tombol Fullscreen di bagian atas.</p>
+      </div>
+    </section>
+  </main>
+  <footer>EL7 LUXURY LOBBY EXPERIENCE · 3D MODEL BY LAZAE ON SKETCHFAB</footer>
+
+  <script>
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const hero = document.querySelector('.hero');
+
+    fullscreenBtn.addEventListener('click', async () => {
+      try {
+        if (!document.fullscreenElement) {
+          await hero.requestFullscreen();
+          fullscreenBtn.textContent = '✕ Exit fullscreen';
+        } else {
+          await document.exitFullscreen();
+          fullscreenBtn.textContent = '⛶ Fullscreen';
+        }
+      } catch (error) {
+        fullscreenBtn.textContent = 'Fullscreen unavailable';
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      fullscreenBtn.textContent = document.fullscreenElement ? '✕ Exit fullscreen' : '⛶ Fullscreen';
+    });
+  </script>
+</body>
+</html>
